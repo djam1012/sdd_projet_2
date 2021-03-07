@@ -76,13 +76,56 @@ int fonctionHachage(int clef, int m){
 void inserer(BiblioH* b,int num,char* titre,char* auteur){
   // on trouve dans quelle case de la table de hachage on insère le livre
   int i=fonctionHachage(fonctionClef(auteur), b->m);
+  LivreH* cour=(b->T)[i];
   // on insère le livre à cette case si elle est vide
-  if (!(b->T)[i]) (b->T)[i]=creer_livre(num, titre, auteur);
-  // sinon on l'insère par chainage avec le livre déjà présent
-  else (b->T)[i]->suivant=creer_livre(num, titre, auteur);
-  b->nE++;
+  if (!(b->T)[i]){
+    (b->T)[i]=creer_livre(num, titre, auteur);
+    b->nE++;
+    return;
+    // sinon on l'insère par chainage avec le livre déjà présent ou celui d'après etc.
+  } else {
+     while (cour->suivant) cour=cour->suivant;
+     cour->suivant=creer_livre(num, titre, auteur);
+     b->nE++;
+   }
 }
 
 void afficher_livre(LivreH* l){
-  printf("Livre numéro: %d\t Titre: %s\t Auteur: %s\n", l->num, l->titre, l->auteur);
+  printf("\x1B[36m");
+  printf("Livre numéro: %d\tTitre: %s\tAuteur: %s\n", l->num, l->titre, l->auteur);
+  printf("\x1B[37m");
+}
+
+void afficher_biblio(BiblioH* b){
+  if (!b){
+    printf("La bibliothèque est vide, impossible de l'afficher.\n");
+    return;
+  }
+  LivreH* cour;
+  for (int i=0; i<b->m; i++){
+    cour=(b->T)[i];
+    while(cour){
+      afficher_livre(cour);
+      cour=cour->suivant;
+    }
+  }
+  printf("\n");
+}
+
+LivreH* recherche_ouvrage_num(BiblioH* b, int num){
+  if (!b){
+    printf("La bibliothèque est vide.\n");
+    return NULL;
+  }
+  LivreH* cour;
+  for (int i=0; i<b->m; i++){
+    cour=(b->T)[i];
+    while(cour){
+      if (cour->num==num){
+        afficher_livre(cour);
+        return cour;
+      }
+      cour=cour->suivant;
+    }
+  }
 }
