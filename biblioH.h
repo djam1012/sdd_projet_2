@@ -23,5 +23,7 @@ void liberer_biblio(BiblioH* b);
 int fonctionHachage(int cle, int m);
 void inserer(BiblioH* b,int num,char* titre,char* auteur);
 void afficher_livre(LivreH* l);
+void afficher_biblio(BiblioH* b);
+LivreH* recherche_ouvrage_num(BiblioH* b, int num);
 
 #endif
